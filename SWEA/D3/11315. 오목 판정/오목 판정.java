@@ -55,7 +55,7 @@ public class Solution {
 							}
 						}
 
-						// 세로 오목 확인
+						// 가로 오목 확인
 						cnt = 1;
 						for (int col = j + 1; col < N; col++) {
 							if (omok[i][col] != 'o') {
