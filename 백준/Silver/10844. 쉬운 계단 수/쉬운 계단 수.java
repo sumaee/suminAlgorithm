@@ -28,7 +28,7 @@ public class Main {
 	static long check(int row, int col) {
 
 		if (row == 1) {
-			return arr[row][col];
+			return arr[row][col] % 1000000000;
 		}
 
 		if (arr[row][col] == null) {
