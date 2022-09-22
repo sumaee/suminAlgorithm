@@ -1,77 +1,76 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Solution {
+	static int N;
+	static int[] myHome;
+	static int[] comp;
 	static int[][] client;
 	static boolean[] visit;
-	static int myHomeX;
-	static int myHomeY;
-	static int compX;
-	static int compY;
 	static int min;
-	static int N;
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
-		int test_case = sc.nextInt();
+		StringTokenizer st;
+
+		int test_case = Integer.parseInt(br.readLine());
 		for (int tc = 1; tc <= test_case; tc++) {
-
-			// 고객의 수
-			N = sc.nextInt();
-			visit = new boolean[N];
+			sb.append("#" + tc + " ");
 			min = Integer.MAX_VALUE;
-			// 회사 좌표 받기
-			compX = sc.nextInt();
-			compY = sc.nextInt();
+			N = Integer.parseInt(br.readLine());// 고객의 수
 
-			// 내집 좌표 받기
-			myHomeX = sc.nextInt();
-			myHomeY = sc.nextInt();
+			st = new StringTokenizer(br.readLine());
+			// [0] : 회사 x좌표
+			// [1] : 회사 y좌표
+			comp = new int[2];
+			comp[0] = Integer.parseInt(st.nextToken());
+			comp[1] = Integer.parseInt(st.nextToken());
 
-			// 고객 좌표 받기
-			// [][0]: x좌표
-			// [][1]: y좌표
+			// [0] : 내집 x좌표
+			// [1] : 내집 y좌표
+			myHome = new int[2];
+			myHome[0] = Integer.parseInt(st.nextToken());
+			myHome[1] = Integer.parseInt(st.nextToken());
+
+			// [][0] : 고객 x좌표
+			// [][1] : 고객 y좌표
 			client = new int[N][2];
+			visit = new boolean[N];
 			for (int i = 0; i < N; i++) {
-				client[i][0] = sc.nextInt();
-				client[i][1] = sc.nextInt();
+				client[i][0] = Integer.parseInt(st.nextToken());
+				client[i][1] = Integer.parseInt(st.nextToken());
 			}
 
-			// 회사에서 시작
-			check(0, compX, compY, 0);
-			sb.append("#" + tc + " " + min).append("\n");
+			findMin(0, comp[0], comp[1], 0);
+			sb.append(min).append("\n");
 		} // tc
 		System.out.println(sb);
 	}// main
 
-	public static void check(int idx, int x, int y, int dist) {
-
-		// 지금 구하는 거리가 최솟값보다 크면 그냥 끝낼 것이다.
-		if (dist > min) {
+	public static void findMin(int idx, int x, int y, int dis) {
+		// 구하다가 거리가 지금의 최솟값보다 커지면 더 이상 볼 필요가 없으므로 끝내버림
+		if (dis >= min) {
 			return;
 		}
 
-		// 완성되었을 때 거리 확인
+		// 마지막 고객집 까지 갔다면 내집까지 거리 계산
 		if (idx == N) {
-			// 마지막 고객 집에서 내집까지의 거리 더하기
-			dist += (Math.abs(myHomeX - x) + Math.abs(y - myHomeY));
-
-			// 최솟값 갱신
-			min = Math.min(min, dist);
+			dis += Math.abs(x - myHome[0]) + Math.abs(y - myHome[1]);
+			min = Math.min(min, dis);
 			return;
 		}
 
 		for (int i = 0; i < N; i++) {
+			// 방문하지 않은 고객의 집이라면 진행
 			if (!visit[i]) {
-
 				visit[i] = true;
-				check(idx + 1, client[i][0], client[i][1],
-						dist + (Math.abs(x - client[i][0]) + Math.abs(y - client[i][1])));
+				findMin(idx + 1, client[i][0], client[i][1],
+						dis + Math.abs(x - client[i][0]) + Math.abs(y - client[i][1]));
 				visit[i] = false;
-
 			}
-
 		}
-
-	}// check
+	}
 }
