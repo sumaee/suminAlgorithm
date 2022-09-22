@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,9 +7,7 @@ public class Main {
 
 	static int N;
 	static int[][] arr;
-	static int one;
-	static int zero;
-	static int minus;
+	static int[] result;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,7 +15,7 @@ public class Main {
 
 		N = Integer.parseInt(br.readLine());
 		arr = new int[N][N];
-
+		result = new int[3];
 		// 배열 채워넣기
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -28,46 +25,35 @@ public class Main {
 		}
 
 		check(0, 0, N);
-		System.out.println(minus);
-		System.out.println(zero);
-		System.out.println(one);
+		for (int a : result) {
+			System.out.println(a);
+		}
 	}// main
 
 	static void check(int row, int col, int size) {
-		int onesum = 0;
-		int zerosum = 0;
-		int minussum = 0;
+		if (check2(row, col, size)) {
+			result[arr[row][col] + 1]++;
+			return;
+		}
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				check(row + (i * size) / 3, col + (j * size) / 3, size / 3);
+			}
+		}
+
+	}
+
+	static boolean check2(int row, int col, int size) {
+		int onesum = arr[row][col];
 
 		for (int i = row; i < row + size; i++) {
 			for (int j = col; j < col + size; j++) {
-				if (arr[i][j] == 0) {
-					zerosum++;
-				} else if (arr[i][j] == 1) {
-					onesum++;
-				} else if (arr[i][j] == -1) {
-					minussum++;
+				if (arr[i][j] != onesum) {
+					return false;
 				}
 			}
 		}
-
-		if (zerosum == (size * size)) {
-			zero++;
-			return;
-		} else if (onesum == (size * size)) {
-			one++;
-			return;
-		} else if (minussum == (size * size)) {
-			minus++;
-			return;
-		} else {
-
-			for (int i = row; i <= row + (2 * size) / 3; i += size / 3) {
-				for (int j = col; j <= col + (2 * size) / 3; j += size / 3) {
-					check(i, j, size / 3);
-				}
-			}
-			return;
-
-		}
+		return true;
 	}
 }
