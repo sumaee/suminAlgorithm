@@ -26,8 +26,10 @@ public class Main {
 			st = new StringTokenizer(br.readLine());
 			int x = Integer.parseInt(st.nextToken());
 			int y = Integer.parseInt(st.nextToken());
-
-			union(x, y, i);
+            
+            if(cnt==0){
+                union(x, y, i);
+            }
 		}
 		System.out.println(cnt);
 	}// main
@@ -42,7 +44,7 @@ public class Main {
 
 		// 만약 합치려고 할 때 부모가 같으면 이미 연결되어 있다는 것이므로
 		// 사이클 존재 해당 수를 합칠 때의 i+1번째가 답이 됨
-		if (find(y) == find(x) && cnt == 0) {
+		if (find(y) == find(x)) {
 			cnt = i + 1;
 		}
 		parent[find(y)] = find(x);
