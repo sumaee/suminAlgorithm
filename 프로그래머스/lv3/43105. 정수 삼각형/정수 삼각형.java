@@ -2,9 +2,9 @@ import java.lang.*;
 import java.util.*;
 
 class Solution {
-    static int[][] arr;
-    static int[][] newArr;
-    static int row, col, c;
+   int[][] arr;
+    int[][] newArr;
+    int row, col, c;
     
     public int solution(int[][] triangle) {
         int answer = 0;
