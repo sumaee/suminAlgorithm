@@ -36,6 +36,7 @@ class Solution {
                     break;
             }   
         }
+        
         int[] answer = new int[2];
         int queSize = que.size();
         
@@ -46,7 +47,7 @@ class Solution {
             //최솟값 일단 넣고
             answer[1] = que.poll();
             
-            //가운데 있는 값 다 버리고 마지막 최솟값만 반환
+            //가운데 있는 값 다 버리고 마지막 최댓값만 반환
             while(que.size()!=1){
                 que.poll();
             }
