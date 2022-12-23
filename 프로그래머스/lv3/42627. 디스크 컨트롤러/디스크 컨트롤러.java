@@ -14,10 +14,9 @@ class Solution {
         
         int time = 0; // 현재 시간
         int idx = 0; // jobs의 인덱스
-        int cnt = 0; // 처리한 jobs의 개수
         
-        //cnt(처리한 jobs의 개수)가 들어온 jobs의 개수보다 작을 때까지 진행
-        while(cnt<jobs.length){
+    
+       for(int i =0; i<jobs.length; ){
             //해당 시간에 요청이 들어온 작업을 넣어줌
             while(idx<jobs.length && jobs[idx][0]<=time){
                 que.offer(jobs[idx++]);
@@ -38,8 +37,8 @@ class Solution {
                 //시간의 흐름은 현재 작업이 끝나는 시간이므로 소요 시간을 더해줌
                 time +=curr[1];
                 
-                //작업 하나를 처리했다는 표시
-                cnt++;
+                //작업 하나를 처리했으므로 다음으로 넘어감
+                i++;
             }
         }
         
