@@ -20,13 +20,13 @@ class Solution {
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
                 for(int k = 0; k < n; k++){
-                    if(graph[i][k] == 1 && graph[k][j] == 1){
-                        graph[i][j] = 1;
-                        graph[j][i] = -1;
+                    if(graph[j][i] == 1 && graph[i][k] == 1){
+                        graph[j][k] = 1;
+                        graph[k][j] = -1;
                     }
-                    if(graph[i][k] == -1 && graph[k][j] == -1){
-                        graph[i][j] = -1;
-                        graph[j][i] = 1;
+                    if(graph[j][i] == -1 && graph[i][k] == -1){
+                        graph[j][k] = -1;
+                        graph[k][j] = 1;
                     }
                 }
             }
