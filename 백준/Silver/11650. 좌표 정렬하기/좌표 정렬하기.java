@@ -1,39 +1,35 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-		int N = Integer.parseInt(br.readLine());
-		int[][] arr = new int[N][2];
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < 2; j++) {
-				arr[i][j] = Integer.parseInt(st.nextToken());
-			}
-		}
+        int n = Integer.parseInt(br.readLine());
+        List<Pair> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            list.add(new Pair(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+        }
 
-		Arrays.sort(arr, new Comparator<int[]>() {
-			public int compare(int[] n1, int[] n2) {
-				if (n1[0] == n2[0]) {
-					return n1[1] - n2[1];
-				} else {
-					return n1[0] - n2[0];
-				}
-			}
-		});
+        list.sort((o1, o2) -> o1.x == o2.x ? o1.y - o2.y : o1.x - o2.x);
 
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < 2; j++) {
-				System.out.print(arr[i][j] + " ");
-			}
-			System.out.println();
-		}
-	}
+        for (Pair pair : list) {
+            System.out.println(pair.x + " " + pair.y);
+        }
+    }
+}
+
+class Pair {
+    int x, y;
+
+    public Pair(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }
