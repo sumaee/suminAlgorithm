@@ -3,30 +3,33 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String s) {
-        int[] arr = new int[100001];
-        int[] result = new int[100001];
-        
-        for(String str : s.replace("{", "").replace("}", "").split(",")){
+       HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (String str : s.replace("{", "").replace("}", "").split(",")) {
             int num = Integer.parseInt(str);
-            arr[num]++;
+            map.put(num, map.getOrDefault(num, 0) + 1);
         }
-        
-        int cnt = 0;
-        for(int i=0; i<result.length ; i++){
-            if(arr[i]!=0){
-                result[arr[i]] = i;
-                cnt++;
-            }
+
+        //우선 순위 큐에 담기
+        PriorityQueue<Num> nums = new PriorityQueue<>((o1, o2) -> o2.cnt - o1.cnt);
+        for (int key : map.keySet()) {
+            nums.add(new Num(key, map.get(key)));
         }
-        
-        int[] answer = new int[cnt];
-        int idx=0;
-        for(int i=result.length-1; i>=0 ; i--){
-            if(result[i] != 0){
-                answer[idx++] = result[i];
-            }
+
+        int[] answer = new int[map.size()];
+        int idx = 0;
+        while (!nums.isEmpty()) {
+            answer[idx++] = nums.poll().num;
         }
-        
         return answer;
+    }
+}
+
+class Num{
+    int num, cnt;
+    
+    public Num(int num, int cnt){
+        this.num = num;
+        this.cnt = cnt;
     }
 }
