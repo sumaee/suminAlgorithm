@@ -1,10 +1,13 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
     static boolean[] primeNum;
+    static List<Integer> primes;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,6 +16,7 @@ public class Main {
 
         int testCase = Integer.parseInt(br.readLine());
         primeNum = new boolean[2000001];
+        primes = new ArrayList<>();
         getPrimeNum();
         nxt:
         for (int tc = 0; tc < testCase; tc++) {
@@ -21,7 +25,7 @@ public class Main {
             long b = Long.parseLong((st.nextToken()));
 
             long len = a + b;
-            //만약 길이가 4 미만이라면 나올 수 있는 게 없음
+            //만약 길이가 4 미만이라면 나올 수 있는 게없음
             if (len < 4) {
                 sb.append("NO").append("\n");
             }
@@ -52,9 +56,9 @@ public class Main {
         if (num < primeNum.length) return !primeNum[(int) num];
 
         //선언한 배열보다 크다면
-        for (int i = 2; i < primeNum.length; i++) {
+        for (Integer prime : primes) {
             //2000000이하의 소수로 나눠떨어지면 그건 소수가 아님
-            if (!primeNum[i] && num % i == 0) return false;
+            if (num % prime == 0) return false;
         }
         return true;
     }
@@ -62,7 +66,7 @@ public class Main {
     private static void getPrimeNum() {
         for (int i = 2; i < primeNum.length; i++) {
             if (primeNum[i]) continue;
-
+            primes.add(i);
             for (int j = i * 2; j < primeNum.length; j += i) {
                 primeNum[j] = true;
             }
