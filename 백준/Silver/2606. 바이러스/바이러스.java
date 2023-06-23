@@ -1,40 +1,52 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class Main {
+    static boolean[] visited;
+    static List<Integer>[] computers;
+    static int answer;
 
-	static int connect[][];
-	static boolean check[];
-	static int com, K, virus;
-	static int cnt=0;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		com = sc.nextInt();
-		K = sc.nextInt();
-		virus = 1; // 바이러스 시작시점
+        int n = Integer.parseInt(br.readLine()); // 컴퓨터 수
+        int v = Integer.parseInt(br.readLine()); // 연결 간선 수
 
-		connect = new int[com + 1][com + 1]; // 탐색 경로 저장 배열
-		check = new boolean[com + 1]; // 경로 지나갔는지 여부 체크
+        //초기 설정
+        visited = new boolean[n + 1];
+        computers = new List[n + 1];
+        for (int i = 1; i <= n; i++) {
+            computers[i] = new ArrayList<>();
+        }
 
-		for (int i = 0; i < K; i++) {
-			int a = sc.nextInt();
-			int b = sc.nextInt();
-			connect[a][b] = 1;
-			connect[b][a] = 1;
-		}
-		
-		dfs(1);
-		System.out.println(cnt);
-	}
-	
-	public static void dfs(int i) {
-		check[i]=true;
-		
-		for(int j=0; j<=com; j++) {
-			if(connect[i][j]==1 && check[j]==false) {
-				cnt++;
-				dfs(j);
-			}
-		}
-	}
+        //연결 정보 받기
+        for (int i = 0; i < v; i++) {
+            st = new StringTokenizer(br.readLine());
+            int first = Integer.parseInt(st.nextToken());
+            int second = Integer.parseInt(st.nextToken());
+
+            computers[first].add(second);
+            computers[second].add(first);
+        }
+        answer = 0;
+        findVirus(1);
+        System.out.println(answer);
+    }
+
+    private static void findVirus(int com) {
+        visited[com] = true;
+
+        for (int i = 0; i < computers[com].size(); i++) {
+            int curr = computers[com].get(i);
+            if (!visited[curr]) {
+                findVirus(curr);
+                answer++;
+            }
+        }
+    }
 }
