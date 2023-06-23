@@ -1,69 +1,78 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-	static int N;
-	static int M;
-	static int V;
-	static boolean[] visited;
-	static int[][] graph;
-	static StringBuilder sb;
+    static StringBuilder sb;
+    static boolean[] visited;
+    static List<Integer>[] arr;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		sb = new StringBuilder();
-		N = Integer.parseInt(st.nextToken()); // 정점의 개수
-		M = Integer.parseInt(st.nextToken()); // 간선의 개수
-		V = Integer.parseInt(st.nextToken()); // 탐색 시작 정점 번호
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        sb = new StringBuilder();
 
-		visited = new boolean[N + 1];
-		graph = new int[N + 1][N + 1];
+        int n = Integer.parseInt(st.nextToken()); //정점 개수
+        int m = Integer.parseInt(st.nextToken()); // 간선 개수
+        int v = Integer.parseInt(st.nextToken()); // 시작 번호
 
-		for (int i = 0; i < M; i++) {
-			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			// 연결되 있는 것끼리 배열에 넣기
-			graph[a][b] = 1;
-			graph[b][a] = 1;
-		}
-		dfs(V);
-		sb.append("\n");
-		Arrays.fill(visited, false);
-		bfs(V);
+        arr = new ArrayList[n + 1];
+        for (int i = 1; i <= n; i++) {
+            arr[i] = new ArrayList<>();
+        }
 
-		System.out.println(sb);
-	}// main
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int start = Integer.parseInt(st.nextToken());
+            int end = Integer.parseInt(st.nextToken());
+            arr[start].add(end);
+            arr[end].add(start);
+        }
+        //정점이 여러개일 경우 작은 것부터 뽑기 위한 정렬
+        for (int i = 1; i <= n; i++) {
+            Collections.sort(arr[i]);
+        }
+        
+        visited = new boolean[n + 1];
+        dfs(v);
+        sb.append("\n");
 
-	public static void dfs(int idx) {
-		visited[idx] = true;
-		sb.append(idx + " ");
-		for (int i = 1; i <= N; i++) {
-			if (graph[idx][i] == 1 && !visited[i]) {
-				dfs(i);
-			}
-		}
-	}
+        visited = new boolean[n + 1];
+        bfs(v);
 
-	public static void bfs(int idx) {
-		visited[idx] = true;
-		Queue<Integer> que = new LinkedList<>();
-		que.offer(idx);
-		while (!que.isEmpty()) {
-			int curr = que.poll();
-			sb.append(curr + " ");
-			for (int i = 1; i <= N; i++) {
-				if (graph[curr][i] == 1 && !visited[i]) {
-					visited[i] = true;
-					que.offer(i);
-				}
-			}
-		}
-	}
+        System.out.println(sb);
+    }
+
+    private static void dfs(int start) {
+        visited[start] = true;
+        sb.append(start).append(" ");
+        for (int i = 0; i < arr[start].size(); i++) {
+            if (!visited[arr[start].get(i)]) {
+                dfs(arr[start].get(i));
+            }
+        }
+    }
+
+    private static void bfs(int start) {
+        visited[start] = true;
+        Queue<Integer> que = new LinkedList<>();
+        que.offer(start);
+
+        while (!que.isEmpty()) {
+            int curr = que.poll();
+            sb.append(curr).append(" ");
+
+            for (int i = 0; i < arr[curr].size(); i++) {
+                int nxt = arr[curr].get(i);
+                if (!visited[nxt]) {
+                    visited[nxt] = true;
+                    que.offer(nxt);
+                }
+
+            }
+
+        }
+    }
+
 }
