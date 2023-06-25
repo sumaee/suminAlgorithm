@@ -5,82 +5,82 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-class Node {
-	int row;
-	int col;
-	int day;
+public class Main {
+    static int[] dr = {-1, 1, 0, 0};
+    static int[] dc = {0, 0, -1, 1};
+    static Queue<Node2> que;
+    static int[][] tomatos;
+    static int m, n;
 
-	public Node(int row, int col, int day) {
-		this.row = row;
-		this.col = col;
-		this.day = day;
-	}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
+        m = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+
+        que = new LinkedList<>();
+        tomatos = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < m; j++) {
+                int tomato = Integer.parseInt(st.nextToken());
+                tomatos[i][j] = tomato;
+
+                if (tomato == 1) {
+                    que.offer(new Node2(i, j, 0));
+                }
+            }
+        }
+        if (que.isEmpty()) {
+            System.out.println(-1);
+        } else {
+            bfs();
+        }
+    }
+
+    private static void bfs() {
+
+        int answer = 0;
+        while (!que.isEmpty()) {
+            Node2 curr = que.poll();
+
+            for (int i = 0; i < 4; i++) {
+                int drow = curr.row + dr[i];
+                int dcol = curr.col + dc[i];
+
+                //범위를 벗어나거나 -1 이라면 패스
+                if (drow < 0 || drow >= n || dcol < 0 || dcol >= m || tomatos[drow][dcol] == -1) continue;
+
+                if (tomatos[drow][dcol] == 0) {
+                    que.offer(new Node2(drow, dcol, curr.day + 1));
+                    tomatos[drow][dcol] = 1;
+                }
+                answer = Math.max(answer, curr.day);
+            }
+        }
+
+        //토마토 부분 돌면서 안익은 토마토 가 있다면 -1 출력
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (tomatos[i][j] == 0) {
+                    System.out.println(-1);
+                    return;
+                }
+            }
+        }
+
+        System.out.println(answer);
+    }
 }
 
-public class Main {
-	static int M;
-	static int N;
-	static int[][] tomato;
-	static boolean[][] visited;
-	static Queue<Node> que = new LinkedList<>();
-	static int[] dr = { -1, 0, 1, 0 };
-	static int[] dc = { 0, 1, 0, -1 };
-	static int result;
+class Node2 {
+    int row, col, day;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-
-		M = Integer.parseInt(st.nextToken()); // 가로 수
-		N = Integer.parseInt(st.nextToken()); // 세로 수
-
-		tomato = new int[N][M];
-		visited = new boolean[N][M];
-		result = -1;
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < M; j++) {
-				tomato[i][j] = Integer.parseInt(st.nextToken());
-				if (tomato[i][j] == 1) {
-					que.add(new Node(i, j, 0));
-					visited[i][j] = true;
-				}
-			}
-		}
-
-		bfs();
-
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (tomato[i][j] == 0) {
-					System.out.println(-1);
-					return;
-				}
-			}
-		}
-
-		System.out.println(result);
-
-	}// main
-
-	public static void bfs() {
-
-		while (!que.isEmpty()) {
-			Node curr = que.poll();
-			for (int i = 0; i < 4; i++) {
-				int row = curr.row + dr[i];
-				int col = curr.col + dc[i];
-				
-				if (row >= 0 && col >= 0 && row < N && col < M && tomato[row][col] == 0) {
-					visited[row][col] = true;
-					tomato[row][col] = curr.day+1;
-					que.offer(new Node(row, col, curr.day + 1));
-				}
-			}
-
-			result = Math.max(result, curr.day);
-
-		}
-	}
+    public Node2(int row, int col, int day) {
+        this.row = row;
+        this.col = col;
+        this.day = day;
+    }
 }
