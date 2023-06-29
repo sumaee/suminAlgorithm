@@ -4,57 +4,61 @@ import java.io.InputStreamReader;
 import java.util.Stack;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb = new StringBuilder();
+    static StringBuilder sb;
 
-		char[] strA = br.readLine().toCharArray();
-		char[] strB = br.readLine().toCharArray();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        sb = new StringBuilder();
 
-		int ALen = strA.length;
-		int BLen = strB.length;
+        String str1 = br.readLine();
+        String str2 = br.readLine();
 
-		int[][] dp = new int[ALen + 1][BLen + 1];
+        //주변을 0으로 채우기 위해 한칸씩 더 크게 만듬
+        int[][] dp = new int[str1.length() + 1][str2.length() + 1];
 
-		for (int i = 1; i <= ALen; i++) {
-			for (int j = 1; j <= BLen; j++) {
+        for (int i = 1; i <= str1.length(); i++) {
+            for (int j = 1; j <= str2.length(); j++) {
+                //만약 두 문자열이 같으면 왼쪽 대각선 위에 있는 값보다 1개 더 크게 저장
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                }
 
-				if (strA[i - 1] == strB[j - 1]) {
-					dp[i][j] = dp[i - 1][j - 1] + 1;
-				}
+                //다르다면 위랑 왼쪽의 값중 큰 값 저장
+                else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
 
-				else {
-					dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-				}
-			}
-		}
+        int answer = dp[str1.length()][str2.length()];
+        sb.append(answer).append("\n");
+        if (answer != 0) {
+            findLCS(str1, str2, dp);
+        }
+        System.out.println(sb);
+    }
 
-		int i = ALen;
-		int j = BLen;
-		Stack<Character> stack = new Stack<>();
-		while (i > 0 && j > 0) {
-			if (strA[i-1] == strB[j-1]) {
-				stack.add(strA[i-1]);
-				i--;
-				j--;
-				continue;
-			}
+    private static void findLCS(String str1, String str2, int[][] dp) {
+        Stack<Character> stack = new Stack<>();
 
-			if (dp[i][j] == dp[i][j - 1]) {
-				j--;
-				continue;
-			}
+        int str1Len = str1.length();
+        int str2Len = str2.length();
 
-			if (dp[i][j] == dp[i - 1][j]) {
-				i--;
-				continue;
-			}
-		}
+        while (str1Len > 0 && str2Len > 0) {
+            if (str1.charAt(str1Len - 1) == str2.charAt(str2Len - 1)) {
+                stack.push(str1.charAt(str1Len - 1));
+                str1Len--;
+                str2Len--;
+            } else if (dp[str1Len][str2Len] == dp[str1Len][str2Len - 1]) {
+                str2Len--;
+            } else if (dp[str1Len][str2Len] == dp[str1Len - 1][str2Len]) {
+                str1Len--;
+            }
+        }
 
-		sb.append(dp[ALen][BLen]+"\n");
-		for (int k = 0; k < dp[ALen][BLen]; k++) {
-			sb.append(stack.pop());
-		}
-		System.out.println(sb);
-	}// main
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop());
+        }
+    }
 }
+
