@@ -4,57 +4,45 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int[] parent;
+    static int[] parents;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
-		int n = Integer.parseInt(st.nextToken());
-		parent = new int[n + 1];
-		int m = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-		for (int i = 1; i <= n; i++) {
-			parent[i] = i;
-		}
+        parents = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            parents[i] = i;
+        }
 
-		for (int i = 0; i < m; i++) {
-			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int x = Integer.parseInt(st.nextToken());
-			int y = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int check = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-			if (a == 0) {
-				union(x, y);
-			} else {
-				if (check(x, y)) {
-					sb.append("YES").append("\n");
-				} else {
-					sb.append("NO").append("\n");
-				}
-			}
-		}
-		
-		System.out.println(sb);
-	}// main
+            if (check == 0) {
+                union(a, b);
+            } else {
+                sb.append(find(a) == find(b) ? "YES" : "NO").append("\n");
+            }
+        }
+        System.out.println(sb);
+    }
 
-	public static int find(int x) {
-		if (x == parent[x]) {
-			return x;
-		} else {
-			return parent[x]=find(parent[x]);
-		}
-	}// find
+    private static void union(int a, int b) {
+        parents[find(b)] = find(a);
+    }
 
-	public static void union(int x, int y) {
-		
-			parent[find(y)] = find(x);
-		
-	}// union
+    private static int find(int num) {
+        if (parents[num] == num) {
+            return num;
+        }
 
-	public static boolean check(int x, int y) {
-
-		return find(x) == find(y);
-	}
+        return parents[num] = find(parents[num]);
+    }
 }
