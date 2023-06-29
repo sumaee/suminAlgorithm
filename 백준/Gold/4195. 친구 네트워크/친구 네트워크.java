@@ -6,67 +6,69 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int F;
-	static int[] p, rank;
+    static int[] friends, cnt;
+    static int f;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
 
-		int test_case = Integer.parseInt(br.readLine());
-		for (int tc = 1; tc <= test_case; tc++) {
-			Map<String, Integer> list = new HashMap<>();
-			F = Integer.parseInt(br.readLine());
+        int testCase = Integer.parseInt(br.readLine());
+        for (int tc = 0; tc < testCase; tc++) {
+            Map<String, Integer> info = new HashMap<>();
+            f = Integer.parseInt(br.readLine());
 
-			// 3줄이 나온다고 하면 각각 다른 사람 2명씩 총 6명이 나올 수 있기때문에
-			// 최대 *2 만큼의 크기를 설정
-			p = new int[F * 2];
-			rank = new int[F * 2];
+            friends = new int[f * 2];
+            cnt = new int[f * 2];
+            for (int i = 0; i < f * 2; i++) {
+                friends[i] = i;
+                cnt[i] = 1;
+            }
 
-			// 초기 설정
-			for (int i = 0; i < F * 2; i++) {
-				p[i] = i;
-				rank[i] = 1;
-			}
+            int idx = 0;
+            for (int i = 0; i < f; i++) {
+                st = new StringTokenizer(br.readLine());
 
-			int idx = 0;
-			for (int i = 0; i < F; i++) {
-				st = new StringTokenizer(br.readLine());
+                String friendA = st.nextToken();
+                String friendB = st.nextToken();
 
-				String x = st.nextToken();
-				String y = st.nextToken();
+                //만약 map에 정보가 없다면 저장
+                if (!info.containsKey(friendA)) {
+                    info.put(friendA, idx++);
+                }
+                if (!info.containsKey(friendB)) {
+                    info.put(friendB, idx++);
+                }
 
-				if (!list.containsKey(x)) {
-					list.put(x, idx++);
-				}
+                //친구 관계 합치고 친구 수 세기
+                union(info.get(friendA), info.get(friendB));
+                sb.append(cnt[find(info.get(friendA))]).append("\n");
+            }
+        }
+        System.out.println(sb);
+    }
 
-				if (!list.containsKey(y)) {
-					list.put(y, idx++);
-				}
+    private static void union(int a, int b) {
+        int x = find(a);
+        int y = find(b);
 
-				union(list.get(x), list.get(y));
-				sb.append(rank[find(list.get(x))]).append("\n");
-			}
+        //둘의 부모가 다르면 친구 관계 만들기
+        if (x != y) {
+            friends[y] = x;
 
-		} // tc
-		System.out.println(sb);
-	}// main
+            //친구 수 늘리기
+            cnt[x] += cnt[y];
+            cnt[y] = cnt[x];
+        }
+    }
 
-	private static void union(int x, int y) {
-		int a = find(x);
-		int b = find(y);
+    private static int find(int num) {
+        if (friends[num] == num) {
+            return num;
+        }
 
-		if(a!=b) {
-			p[b] = a;
-			rank[a] += rank[b];
-			rank[b] = rank[a];
-		}
-	}
+        return friends[num] = find(friends[num]);
+    }
 
-	private static int find(int x) {
-		if (x != p[x])
-			p[x] = find(p[x]);
-		return p[x];
-	}
 }
