@@ -26,12 +26,19 @@ public class Main {
 	}// main
 
 	static void check(int row, int col, int size) {
-		int cnt=sum(row, col, size);
+		int cnt = 0;
+
+		for (int i = row; i < row + size; i++) {
+			for (int j = col; j < col + size; j++) {
+				cnt += arr[i][j];
+			}
+		}
+
 		if (cnt == (size * size)) {
-			sb.append(1);
+			sb.append("1");
             return;
 		} else if (cnt == 0) {
-			sb.append(0);
+			sb.append("0");
             return;
 		} 
 			sb.append("(");
@@ -44,15 +51,4 @@ public class Main {
 		
 
 	}
-    
-    static int sum(int row, int col, int size){
-        int cnt=0;
-        for (int i = row; i < row + size; i++) {
-			for (int j = col; j < col + size; j++) {
-				cnt += arr[i][j];
-			}
-		}
-        
-        return cnt;
-    }
 }
