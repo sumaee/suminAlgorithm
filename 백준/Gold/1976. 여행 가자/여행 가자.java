@@ -4,65 +4,70 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int[] parent;
-	static int[] check;
-	static int N, M;
+    static int[] connect, plan;
+    static int n, m;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
 
-		N = Integer.parseInt(br.readLine());
-		M = Integer.parseInt(br.readLine());
+        n = Integer.parseInt(br.readLine());
+        m = Integer.parseInt(br.readLine());
+        connect = new int[n + 1];
+        //초기 설정
+        for (int i = 1; i <= n; i++) {
+            connect[i] = i;
+        }
+        
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                int check = Integer.parseInt(st.nextToken());
+                //연결 되어있으면 union
+                if (check == 1) {
+                    union(i + 1, j + 1);
+                }
+            }
+        }
 
-		parent = new int[N + 1];
-		check = new int[M];
-		for (int i = 1; i <= N; i++) {
-			parent[i] = i;
-		}
+        st = new StringTokenizer(br.readLine());
+        plan = new int[m];
+        for (int i = 0; i < m; i++) {
+            plan[i] = Integer.parseInt(st.nextToken());
+        }
 
-		for (int i = 1; i <= N; i++) {
-			st = new StringTokenizer(br.readLine());
-			for (int j = 1; j <= N; j++) {
-				int conn = Integer.parseInt(st.nextToken());
-				if (conn == 1) {
-					union(i, j);
-				}
-			}
-		}
+        if (isPossible(plan[0])) {
+            sb.append("YES");
+        } else {
+            sb.append("NO");
+        }
 
-		st = new StringTokenizer(br.readLine());
-		for (int i = 0; i < M; i++) {
-			check[i] = Integer.parseInt(st.nextToken());
-		}
+        System.out.println(sb);
 
-		if (isPossible(check[0])) {
-			System.out.println("YES");
-		} else {
-			System.out.println("NO");
-		}
-	}// main
 
-	private static boolean isPossible(int a) {
+    }
 
-		for (int i = 1; i < M; i++) {
-			if (find(a) != find(check[i])) {
-				return false;
-			}
-		}
+    private static boolean isPossible(int start) {
+        for (int i = 1; i < m; i++) {
+            if (find(start) != find(plan[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-		return true;
-	}//isPossible
+    private static void union(int x, int y) {
+        connect[find(y)] = find(x);
+    }
 
-	public static void union(int x, int y) {
-		parent[find(y)] = find(x);
-	}// union
+    private static int find(int x) {
+        if (x == connect[x]) {
+            return x;
+        }
 
-	public static int find(int x) {
-		if (x == parent[x]) {
-			return x;
-		} else {
-			return parent[x] = find(parent[x]);
-		}
-	}// find
+        return connect[x] = find(connect[x]);
+    }
+
+
 }
