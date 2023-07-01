@@ -1,105 +1,97 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-	static int N, E, start;
-	static List<Node>[] graph;
-	static boolean[] visited;
-	static int[] sizeSum;
+    static int[] dist;
+    static boolean[] visited;
+    static List<Node6>[] graph;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-		N = Integer.parseInt(st.nextToken());
-		E = Integer.parseInt(st.nextToken());
-		graph = new ArrayList[N + 1];
-		visited = new boolean[N + 1];
-		sizeSum = new int[N + 1];
+        int n = Integer.parseInt(st.nextToken());
+        int e = Integer.parseInt(st.nextToken());
 
-		for (int i = 1; i <= N; i++) {
-			graph[i] = new ArrayList<>();
-		}
+        //초기 설정
+        graph = new List[n + 1];
+        for (int i = 1; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        visited = new boolean[n + 1];
+        dist = new int[n + 1];
 
-		for (int i = 0; i < E; i++) {
-			st = new StringTokenizer(br.readLine());
-			int stIdx = Integer.parseInt(st.nextToken());
-			int edIdx = Integer.parseInt(st.nextToken());
-			int size = Integer.parseInt(st.nextToken());
+        //간선 저장
+        for (int i = 0; i < e; i++) {
+            st = new StringTokenizer(br.readLine());
 
-			graph[stIdx].add(new Node(edIdx, size));
-			graph[edIdx].add(new Node(stIdx, size));
-		}
+            int start = Integer.parseInt(st.nextToken());
+            int end = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
 
-		st = new StringTokenizer(br.readLine());
-		int must1 = Integer.parseInt(st.nextToken());
-		int must2 = Integer.parseInt(st.nextToken());
+            graph[start].add(new Node6(end, c));
+            graph[end].add(new Node6(start, c));
+        }
 
-		long result1 = 0;
-		result1 += dijkstra(1, must1);
-		result1 += dijkstra(must1, must2);
-		result1 += dijkstra(must2, N);
+        //경유지 정점
+        st = new StringTokenizer(br.readLine());
+        int v1 = Integer.parseInt(st.nextToken());
+        int v2 = Integer.parseInt(st.nextToken());
 
-		long result2 = 0;
-		result2 += dijkstra(1, must2);
-		result2 += dijkstra(must2, must1);
-		result2 += dijkstra(must1, N);
+        // 출발지 -> v1 -> v2 -> 도착지
+        long result1 = 0;
+        result1 += dijkstra(1, v1);
+        result1 += dijkstra(v1, v2);
+        result1 += dijkstra(v2, n);
 
-		long answer = Math.min(result1, result2);
+        // 출발지 -> v2 -> v1 -> 도착지
+        long result2 = 0;
+        result2 += dijkstra(1, v2);
+        result2 += dijkstra(v2, v1);
+        result2 += dijkstra(v1, n);
 
-		answer = answer >= Integer.MAX_VALUE ? -1 : answer;
-		System.out.println(answer);
+        //두값을 비교해 더 작은 값 찾기
+        long answer = Math.min(result1, result2);
 
-	}
+        System.out.println(answer >= Integer.MAX_VALUE ? -1 : answer);
 
-	private static int dijkstra(int start, int end) {
-		Arrays.fill(sizeSum, Integer.MAX_VALUE);
-		Arrays.fill(visited, false);
-		boolean check = false;
-		PriorityQueue<Node> que = new PriorityQueue<>(new Comparator<Node>() {
+    }
 
-			@Override
-			public int compare(Node o1, Node o2) {
-				return o1.size - o2.size;
-			}
-		});
+    private static long dijkstra(int start, int end) {
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(visited, false);
 
-		que.offer(new Node(start, 0));
-		sizeSum[start] = 0;
+        PriorityQueue<Node6> que = new PriorityQueue<>((o1, o2) -> o1.w - o2.w);
+        dist[start] = 0;
 
-		while (!que.isEmpty()) {
-			Node curr = que.poll();
+        que.offer(new Node6(start, dist[start]));
+        while (!que.isEmpty()) {
+            Node6 curr = que.poll();
 
-			if (!visited[curr.idx]) {
-				visited[curr.idx] = true;
+            if (curr.idx == end) break;
+            
+            if(visited[curr.idx]) continue;
+            
+            visited[curr.idx] = true;
+            for (Node6 nxt : graph[curr.idx]) {
+                if (visited[nxt.idx]) continue;
+                
+                dist[nxt.idx] = Math.min(dist[nxt.idx], dist[curr.idx] + nxt.w);
+                que.offer(new Node6(nxt.idx, dist[nxt.idx]));
+            }
+        }
 
-				for (Node nxt : graph[curr.idx]) {
-					if (!visited[nxt.idx] && sizeSum[nxt.idx] > nxt.size + sizeSum[curr.idx]) {
-						sizeSum[nxt.idx] = nxt.size + sizeSum[curr.idx];
-						que.offer(new Node(nxt.idx, sizeSum[nxt.idx]));
-					}
-				}
-			}
+        return dist[end];
+    }
+}
 
-		}
-		return sizeSum[end];
-	}
+class Node6 {
+    int idx, w;
 
-	private static class Node {
-		int idx;
-		int size;
-
-		public Node(int idx, int size) {
-			this.idx = idx;
-			this.size = size;
-		}
-	}
+    public Node6(int idx, int w) {
+        this.idx = idx;
+        this.w = w;
+    }
 }
