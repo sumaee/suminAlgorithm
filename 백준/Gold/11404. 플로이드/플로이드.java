@@ -1,73 +1,54 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-	static final int INF = 987654321;
-	static int[][] city;
-	static int n, m;
+    static final int MAX = 987654321;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
 
-		// 도시 수
-		n = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine()); // 도시 개수
+        int m = Integer.parseInt(br.readLine());// 버스개수
 
-		city = new int[n + 1][n + 1];
+        int[][] costs = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) costs[i][j] = 0;
+                else costs[i][j] = MAX;
+            }
+        }
 
-		// 초기 설정
-		for (int i = 1; i <= n; i++) {
-			Arrays.fill(city[i], INF);
-			city[i][i] = 0;
-		}
 
-		// 버스의 개수
-		m = Integer.parseInt(br.readLine());
-		for (int i = 0; i < m; i++) {
-			st = new StringTokenizer(br.readLine());
-			int stcity = Integer.parseInt(st.nextToken());
-			int edcity = Integer.parseInt(st.nextToken());
-			int value = Integer.parseInt(st.nextToken());
+        //입력 받기
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int start = Integer.parseInt(st.nextToken()) - 1;
+            int end = Integer.parseInt(st.nextToken()) - 1;
+            int cost = Integer.parseInt(st.nextToken());
 
-			// 들어오는 가중치중 가장 작은 값을 설정
-			city[stcity][edcity] = Math.min(value, city[stcity][edcity]);
-		}
+            costs[start][end] = Math.min(costs[start][end], cost);
+        }
 
-		findMin();
-		for (int i = 1; i <= n; i++) {
-			for (int j = 1; j <= n; j++) {
+        //플로이드 와샬 알고리즘 시작
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    costs[i][j] = Math.min(costs[i][j], costs[i][k] + costs[k][j]);
+                }
+            }
+        }
 
-				sb.append(city[i][j] == INF ? 0 + " " : city[i][j] + " ");
-			}
-			sb.append("\n");
-		}
+        for (int[] cost : costs) {
+            for (int result : cost) {
+                sb.append(result == MAX ? 0 : result).append(" ");
+            }
+            sb.append("\n");
+        }
 
-		System.out.println(sb);
-	}// main
-
-	private static void findMin() {
-		// 경유
-		for (int i = 1; i <= n; i++) {
-			// 출발
-			for (int j = 1; j <= n; j++) {
-				// 출발지와 경유지가 같지 않을 때 진행
-				if (i != j) {
-					// 도착
-					for (int k = 1; k <= n; k++) {
-						// 출발지랑 도착랑 같지 않고, 경유지가 도착지랑 같지 않을 때
-						if (j != k && i != k) {
-							// 기존의 비용이 경유한 값보다 비싸면 갱신
-							if (city[j][k] > city[j][i] + city[i][k]) {
-								city[j][k] = city[j][i] + city[i][k];
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+        System.out.println(sb);
+    }
 }
