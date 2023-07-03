@@ -2,132 +2,103 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static locate[] star;
-	static List<Node> list;
-	static int[] p;
-	static int N, result;
+    static int n;
+    static List<Star> stars;
+    static List<Result>[] data;
+    static boolean[] visited;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-		N = Integer.parseInt(br.readLine()); // 행성의 개수
-		star = new locate[N];
+        n = Integer.parseInt(br.readLine());
+        stars = new ArrayList<>();
+        visited = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            int z = Integer.parseInt(st.nextToken());
 
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
+            stars.add(new Star(i, x, y, z));
+        }
 
-			int x = Integer.parseInt(st.nextToken());
-			int y = Integer.parseInt(st.nextToken());
-			int z = Integer.parseInt(st.nextToken());
+        System.out.println(prim(0));
+    }
 
-			star[i] = new locate(i, x, y, z);
-		}
+    private static int prim(int start) {
+        data = new List[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = new ArrayList<>();
+        }
 
-		p = new int[N];
-		for (int i = 0; i < N; i++) {
-			p[i] = i;
-		}
+        //star를 x 축 기준으로 정렬해서 해당 길이를 큐에 추가
+        stars.sort((o1, o2) -> o1.x - o2.x);
+        for (int i = 0; i < stars.size() - 1; i++) {
+            int len = Math.abs(stars.get(i).x - stars.get(i + 1).x);
+            data[stars.get(i).idx].add(new Result(stars.get(i + 1).idx, len));
+            data[stars.get(i + 1).idx].add(new Result(stars.get(i).idx, len));
+        }
 
-		kruskal(0);
-		System.out.println(result);
-	}// main
+        //star를 y 축 기준으로 정렬해서 해당 길이를 큐에 추가
+        stars.sort((o1, o2) -> o1.y - o2.y);
+        for (int i = 0; i < stars.size() - 1; i++) {
+            int len = Math.abs(stars.get(i).y - stars.get(i + 1).y);
+            data[stars.get(i).idx].add(new Result(stars.get(i + 1).idx, len));
+            data[stars.get(i + 1).idx].add(new Result(stars.get(i).idx, len));
+        }
 
-	private static void kruskal(int start) {
-		list = new ArrayList<>();
+        //star를 z 축 기준으로 정렬해서 해당 길이를 큐에 추가
+        stars.sort((o1, o2) -> o1.z - o2.z);
+        for (int i = 0; i < stars.size() - 1; i++) {
+            int len = Math.abs(stars.get(i).z - stars.get(i + 1).z);
+            data[stars.get(i).idx].add(new Result(stars.get(i + 1).idx, len));
+            data[stars.get(i + 1).idx].add(new Result(stars.get(i).idx, len));
+        }
 
-		// x좌표에 대해 정렬 후 리스트 추가
-		Arrays.sort(star, new Comparator<locate>() {
-			@Override
-			public int compare(locate o1, locate o2) {
-				return o1.x - o2.x;
-			}
-		});
-		for (int i = 0; i < N - 1; i++) {
-			int len = Math.abs(star[i].x - star[i + 1].x);
-			list.add(new Node(star[i].idx, star[i + 1].idx, len));
-		}
+        int sum = 0;
+        PriorityQueue<Result> que = new PriorityQueue<>((o1, o2) -> o1.len - o2.len);
+        que.offer(new Result(start, 0));
+        while (!que.isEmpty()) {
+            Result curr = que.poll();
 
-		// y좌표에 대해 정렬 후 리스트 추가
-		Arrays.sort(star, new Comparator<locate>() {
-			@Override
-			public int compare(locate o1, locate o2) {
-				return o1.y - o2.y;
-			}
-		});
-		for (int i = 0; i < N - 1; i++) {
-			int len = Math.abs(star[i].y - star[i + 1].y);
-			list.add(new Node(star[i].idx, star[i + 1].idx, len));
-		}
+            if (visited[curr.idx]) continue;
 
-		// z좌표에 대해 정렬 후 리스트 추가
-		Arrays.sort(star, new Comparator<locate>() {
-			@Override
-			public int compare(locate o1, locate o2) {
-				return o1.z - o2.z;
-			}
-		});
-		for (int i = 0; i < N - 1; i++) {
-			int len = Math.abs(star[i].z - star[i + 1].z);
-			list.add(new Node(star[i].idx, star[i + 1].idx, len));
-		}
+            visited[curr.idx] = true;
+            sum += curr.len;
 
-		Collections.sort(list, new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				return o1.len - o2.len;
-			}
-		});
+            for (Result nxt : data[curr.idx]) {
+                if (!visited[nxt.idx]) {
+                    que.offer(nxt);
+                }
+            }
+        }
 
-		result = 0;
-		for (int i = 0; i < list.size(); i++) {
-			Node star = list.get(i);
+        return sum;
+    }
+}
 
-			if (find(star.st) == find(star.ed)) {
-				continue;
-			}
+class Result {
+    int idx, len;
 
-			result += star.len;
-			union(star.st, star.ed);
-		}
-	}
+    public Result(int idx, int len) {
+        this.idx = idx;
+        this.len = len;
+    }
+}
 
-	private static void union(int x, int y) {
-		p[find(y)] = find(x);
-	}
+class Star {
+    int idx, x, y, z;
 
-	private static int find(int x) {
-		if (x != p[x]) {
-			p[x] = find(p[x]);
-		}
-		return p[x];
-	}
-
-	private static class locate {
-		int x, y, z, idx;
-
-		public locate(int idx, int x, int y, int z) {
-			this.x = x;
-			this.y = y;
-			this.z = z;
-			this.idx = idx;
-		}
-	}
-
-	private static class Node {
-		int st, ed, len;
-
-		public Node(int st, int ed, int len) {
-			this.st = st;
-			this.ed = ed;
-			this.len = len;
-		}
-	}
+    public Star(int idx, int x, int y, int z) {
+        this.idx = idx;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 }
