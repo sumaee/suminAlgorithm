@@ -2,79 +2,70 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int V, E, result;
-	static boolean[] visited;
-	static List<Node>[] map;
+    static int v, e;
+    static List<Node7>[] node;
+    static boolean[] visited;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-		V = Integer.parseInt(st.nextToken());
-		E = Integer.parseInt(st.nextToken());
+        v = Integer.parseInt(st.nextToken());
+        e = Integer.parseInt(st.nextToken());
 
-		map = new ArrayList[V + 1];
-		visited = new boolean[V + 1];
-		result = 0;
-		for (int i = 1; i <= V; i++) {
-			map[i] = new ArrayList<>();
-		}
+        node = new List[v];
+        visited = new boolean[v];
+        for (int i = 0; i < v; i++) {
+            node[i] = new ArrayList<>();
+        }
 
-		for (int i = 0; i < E; i++) {
-			st = new StringTokenizer(br.readLine());
-			int stIdx = Integer.parseInt(st.nextToken());
-			int edIdx = Integer.parseInt(st.nextToken());
-			int size = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < e; i++) {
+            st = new StringTokenizer(br.readLine());
+            int start = Integer.parseInt(st.nextToken()) - 1;
+            int end = Integer.parseInt(st.nextToken()) - 1;
+            int size = Integer.parseInt(st.nextToken());
 
-			map[stIdx].add(new Node(edIdx, size));
-			map[edIdx].add(new Node(stIdx, size));
-		}
-		prim(1);
-		System.out.println(result);
-	}// main
+            node[start].add(new Node7(end, size));
+            node[end].add(new Node7(start, size));
+        }
 
-	private static void prim(int start) {
-		PriorityQueue<Node> que = new PriorityQueue<>(new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				return o1.size - o2.size;
-			}
+        System.out.println(prim(0));
+    }
 
-		});
+    private static int prim(int start) {
+        int sum = 0;
+        PriorityQueue<Node7> que = new PriorityQueue<>((o1, o2) -> o1.size - o2.size);
 
-		que.offer(new Node(start, 0));
-		while (!que.isEmpty()) {
-			Node curr = que.poll();
+        que.offer(new Node7(start, 0));
+        while (!que.isEmpty()) {
+            Node7 curr = que.poll();
 
-			if (visited[curr.idx]) {
-				continue;
-			}
+            if (visited[curr.idx]) continue;
 
-			visited[curr.idx] = true;
-			result += curr.size;
+            visited[curr.idx] = true;
+            sum += curr.size;
 
-			for (Node nxt : map[curr.idx]) {
-				if (!visited[nxt.idx]) {
-					que.offer(new Node(nxt.idx, nxt.size));
-				}
-			}
-		}
-	}// prim
+            for (Node7 nxt : node[curr.idx]) {
+                if (!visited[nxt.idx]) {
+                    que.offer(new Node7(nxt.idx, nxt.size));
+                }
+            }
+        }
 
-	private static class Node {
-		int idx, size;
+        return sum;
+    }
+}
 
-		public Node(int ed, int size) {
-			this.idx = ed;
-			this.size = size;
-		}
+class Node7 {
+    int idx, size;
 
-	}
-
+    public Node7(int idx, int size) {
+        this.idx = idx;
+        this.size = size;
+    }
 }
