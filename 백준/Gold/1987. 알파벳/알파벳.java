@@ -3,6 +3,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+/*
+재채점 틀림:
+1 1
+A
+0
+정답 : 1
+ */
+
 public class Main {
     static int r, c, answer;
     static int[] dr = {-1, 0, 1, 0};
@@ -20,9 +28,10 @@ public class Main {
         for (int i = 0; i < r; i++) {
             board[i] = br.readLine().toCharArray();
         }
-        
+
         //방문했던 알파벳을 판단하기 위한 작업
         check = new boolean[26];
+        answer = 1;
         dfs(board, 0, 0, 0);
         System.out.println(answer);
     }
@@ -46,7 +55,7 @@ public class Main {
 
             dfs(board, drow, dcol, cnt + 1);
         }
-        
+
         //방문처리 해제
         check[board[row][col] - 'A'] = false;
 
