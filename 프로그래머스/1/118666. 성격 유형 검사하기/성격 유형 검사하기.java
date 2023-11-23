@@ -26,11 +26,6 @@ class Solution {
         for (String result : results) {
             int agreeCnt = map.getOrDefault(result.charAt(1), 0);
             int disagreeCnt = map.getOrDefault(result.charAt(0), 0);
-            //두개의 점수가 같다면 사전순
-            if (agreeCnt == disagreeCnt) {
-                sb.append(result.charAt(1) < result.charAt(0) ? result.charAt(1) : result.charAt(0));
-                continue;
-            }
 
             sb.append(agreeCnt > disagreeCnt ? result.charAt(1) : result.charAt(0));
         }
