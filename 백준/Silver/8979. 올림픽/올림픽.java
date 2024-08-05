@@ -27,18 +27,20 @@ public class Main {
         infos.sort((o1, o2) -> {
             if (o1.goldMedal == o2.goldMedal) {
                 if (o1.silverMedal == o2.silverMedal) {
-                    return o1.bronzeMedal - o2.bronzeMedal;
+                    return o2.bronzeMedal - o1.bronzeMedal;
                 }
-                return o1.silverMedal - o2.silverMedal;
+                return o2.silverMedal - o1.silverMedal;
             }
-            return o1.goldMedal - o2.goldMedal;
+            return o2.goldMedal - o1.goldMedal;
 
         });
 
         infos.get(0).rate = 1;
+        int answerIdx = 0;
         for (int i = 1; i < infos.size(); i++) {
             Info before = infos.get(i - 1);
             Info now = infos.get(i);
+
             if (now.goldMedal == before.goldMedal && now.silverMedal == before.silverMedal && now.bronzeMedal == before.bronzeMedal) {
                 now.rate = before.rate;
             } else {
@@ -46,10 +48,11 @@ public class Main {
             }
 
             if (now.countryIdx == k) {
-                System.out.println(now.rate);
-                break;
+                answerIdx = i;
             }
         }
+
+        System.out.println(infos.get(answerIdx).rate);
 
     }
 
