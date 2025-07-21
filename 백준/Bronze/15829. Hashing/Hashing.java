@@ -8,12 +8,15 @@ public class Main {
 
         int length = Integer.parseInt(br.readLine());
         String str = br.readLine();
+        int m = 1234567891;
+        long pow = (long) Math.pow(31, 0);
 
         long sum = 0;
         for (int i = 0; i < length; i++) {
-            sum += (long) ((str.charAt(i) - 96) * Math.pow(31, i));
+            sum += ((str.charAt(i) - 96) * pow % m);
+            pow = (pow * 31) % m;
         }
 
-        System.out.println(sum);
+        System.out.println(sum % m);
     }
 }
