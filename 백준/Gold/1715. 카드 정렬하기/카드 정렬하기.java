@@ -1,38 +1,42 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.PriorityQueue;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        PriorityQueue<Integer> que = new PriorityQueue<>();
         int n = Integer.parseInt(br.readLine());
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
         for (int i = 0; i < n; i++) {
-            que.offer(Integer.parseInt(br.readLine()));
+            pq.offer(Integer.parseInt(br.readLine()));
         }
 
-        int sum = 0;
-         if (que.size() == 1) {
+        if (pq.size() == 1) {
             System.out.println(0);
             return;
         }
-        while (true) {
-            int first = que.poll();
-            if (que.size() == 1) {
-                sum += first + que.poll();
+
+        int sum = 0;
+        while (!pq.isEmpty()) {
+            int first = pq.poll();
+
+            if(pq.size() == 1){
+                sum += first+ pq.poll();
                 break;
-            } else if (que.size() == 0) {
+            }
+
+            if (pq.size() == 0) {
                 sum += first;
                 break;
             }
 
-            int second = que.poll();
+            int second = pq.poll();
             sum += first + second;
-            que.offer(first + second);
+            pq.offer(first + second);
         }
 
         System.out.println(sum);
+
     }
 }
