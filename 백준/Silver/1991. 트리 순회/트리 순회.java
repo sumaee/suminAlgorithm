@@ -1,7 +1,6 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
 public class Main {
     static StringBuilder sb;
@@ -10,110 +9,106 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         sb = new StringBuilder();
+
         int n = Integer.parseInt(br.readLine());
         Tree tree = new Tree();
 
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
 
-            String root = st.nextToken();
-            String left = st.nextToken();
-            String right = st.nextToken();
+            String value = st.nextToken();
+            String leftChild = st.nextToken();
+            String rightChild = st.nextToken();
 
-            tree.makeTree(root, left, right);
+            tree.makeTree(value, leftChild, rightChild);
         }
 
-        //전위 순회
-        tree.pre(tree.node);
+        tree.preOrder(tree.root);
         sb.append("\n");
-        //중위 순회
-        tree.in(tree.node);
+        tree.inOrder(tree.root);
         sb.append("\n");
-        //후위 순회
-        tree.post(tree.node);
+        tree.postOrder(tree.root);
 
         System.out.println(sb);
     }
 
     static class Tree {
-        Node node;
+        Node root;
 
-        //root가 없으면 입력받은 것을 root로 지정
-        public void makeTree(String data, String left, String right) {
-            if (node == null) {
-                if (!data.equals(".")) {
-                    node = new Node(data);
-                }
+        public void makeTree(String value, String leftChild, String rightChild) {
+            if (root == null) {
+                if (!value.equals("."))
+                    root = new Node(value);
 
-                if (!left.equals(".")) {
-                    node.left = new Node(left);
-                }
+                if (!leftChild.equals("."))
+                    root.left = new Node(leftChild);
 
-                if (!right.equals(".")) {
-                    node.right = new Node(right);
-                }
+                if (!rightChild.equals("."))
+                    root.right = new Node(rightChild);
             } else {
-                findRoot(node, data, left, right);
+                findRoot(root, value, leftChild, rightChild);
             }
+
         }
 
-        public void findRoot(Node node, String data, String left, String right) {
+        public void findRoot(Node node, String value, String leftChild, String rightChild) {
             if (node == null) {
                 return;
             }
 
-            if (node.data.equals(data)) {
+            if (node.value.equals(value)) {
+                if (!leftChild.equals("."))
+                    node.left = new Node(leftChild);
 
-                if (!left.equals(".")) {
-                    node.left = new Node(left);
-                }
-                if (!right.equals(".")) {
-                    node.right = new Node(right);
-                }
+                if (!rightChild.equals("."))
+                    node.right = new Node(rightChild);
             } else {
-                findRoot(node.left, data, left, right);
-                findRoot(node.right, data, left, right);
+                findRoot(node.left, value, leftChild, rightChild);
+                findRoot(node.right, value, leftChild, rightChild);
             }
         }
 
-        public void pre(Node root) {
-            sb.append(root.data);
-            if (root.left != null) {
-                pre(root.left);
+        //전위 순회
+        public void preOrder(Node node) {
+            sb.append(node.value);
+            if (node.left != null) {
+                preOrder(node.left);
             }
-            if (root.right != null) {
-                pre(root.right);
-            }
-        }
-
-        public void in(Node root) {
-            if (root.left != null) {
-                in(root.left);
-            }
-            sb.append(root.data);
-            if (root.right != null) {
-                in(root.right);
+            if (node.right != null) {
+                preOrder(node.right);
             }
         }
 
-        public void post(Node root) {
-            if (root.left != null) {
-                post(root.left);
+        //중위 순회
+        public void inOrder(Node node) {
+            if (node.left != null) {
+                inOrder(node.left);
             }
-            if (root.right != null) {
-                post(root.right);
+            sb.append(node.value);
+            if (node.right != null) {
+                inOrder(node.right);
             }
-            sb.append(root.data);
+        }
+
+        //후위 순회
+        public void postOrder(Node node) {
+            if (node.left != null) {
+                postOrder(node.left);
+            }
+            if (node.right != null) {
+                postOrder(node.right);
+            }
+            sb.append(node.value);
         }
     }
 
-
     static class Node {
-        String data;
-        Node left, right;
+        String value;
+        Node left;
+        Node right;
 
-        public Node(String data) {
-            this.data = data;
+        Node(String value) {
+            this.value = value;
         }
     }
 }
