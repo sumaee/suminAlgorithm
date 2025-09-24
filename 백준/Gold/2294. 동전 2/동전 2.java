@@ -1,8 +1,6 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -16,11 +14,13 @@ public class Main {
         Arrays.fill(dp, 987654321);
         dp[0] = 0;
         for (int i = 1; i <= n; i++) {
-            int coin = Integer.parseInt(br.readLine());
-            for (int j = coin; j <= k; j++) {
-                dp[j] = Math.min(dp[j - coin] + 1, dp[j]);
+            int value = Integer.parseInt(br.readLine());
+
+            for (int j = value; j <= k; j++) {
+                dp[j] = Math.min(dp[j - value] + 1, dp[j]);
             }
         }
+
         System.out.println(dp[k] == 987654321 ? -1 : dp[k]);
     }
 }
