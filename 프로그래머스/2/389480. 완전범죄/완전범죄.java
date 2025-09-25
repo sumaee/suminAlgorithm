@@ -31,13 +31,4 @@ class Solution {
         
         return answer >=n ? -1 : answer;
     }
-    
-    static class Score{
-        int a, b;
-        
-        public Score(int a, int b){
-            this.a = a;
-            this.b = b;
-        }
-    }
 }
