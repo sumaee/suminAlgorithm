@@ -1,39 +1,35 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.lang.*;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-    static final int MAX = 987654321;
+    static final int MAX_NUM = 987654321;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         StringBuilder sb = new StringBuilder();
 
-        int n = Integer.parseInt(br.readLine()); // 도시 개수
-        int m = Integer.parseInt(br.readLine());// 버스개수
+        int n = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
 
+        //초기 세팅
         int[][] costs = new int[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i == j) costs[i][j] = 0;
-                else costs[i][j] = MAX;
+                else costs[i][j] = MAX_NUM;
             }
         }
-
-
-        //입력 받기
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken()) - 1;
-            int end = Integer.parseInt(st.nextToken()) - 1;
-            int cost = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            int c = Integer.parseInt(st.nextToken());
 
-            costs[start][end] = Math.min(costs[start][end], cost);
+            costs[a][b] = Math.min(costs[a][b], c);
         }
 
-        //플로이드 와샬 알고리즘 시작
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
@@ -44,7 +40,7 @@ public class Main {
 
         for (int[] cost : costs) {
             for (int result : cost) {
-                sb.append(result == MAX ? 0 : result).append(" ");
+                sb.append(result == MAX_NUM ? 0 : result).append(" ");
             }
             sb.append("\n");
         }
