@@ -32,6 +32,8 @@ class Solution {
             Locate nxtRed = 
                     (isRedEnd ? redLocate : new Locate(redLocate.row + dr[i], redLocate.col + dc[i]));
             for(int j=0; j<4 ; j++){
+                
+                
                 Locate nxtBlue =
                     (isBlueEnd ? blueLocate : new Locate(blueLocate.row + dr[j], blueLocate.col+dc[j]));
                 
