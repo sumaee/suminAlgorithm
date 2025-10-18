@@ -1,10 +1,6 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.lang.*;
+import java.util.*;
+import java.io.*;
 
 public class Main {
     static long[] dist;
@@ -67,14 +63,14 @@ public class Main {
 
         return true;
     }
-}
 
-class BusInfo {
-    int start, end, time;
+    static class BusInfo {
+        int start, end, time;
 
-    public BusInfo(int start, int end, int time) {
-        this.start = start;
-        this.end = end;
-        this.time = time;
+        public BusInfo(int start, int end, int time) {
+            this.start = start;
+            this.end = end;
+            this.time = time;
+        }
     }
 }
