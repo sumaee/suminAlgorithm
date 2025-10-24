@@ -1,9 +1,5 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
     static int[] parents;
@@ -17,7 +13,6 @@ public class Main {
 
         st = new StringTokenizer(br.readLine());
         int trueKnowNum = Integer.parseInt(st.nextToken());
-
 
         //진실을 아는 사람이 없다면 모든 파티에 참여할 수 있음
         if (trueKnowNum == 0) {
@@ -113,3 +108,4 @@ public class Main {
         return parents[x] = find(parents[x]);
     }
 }
+
