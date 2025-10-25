@@ -43,6 +43,13 @@ class Solution {
             map.put(parent, tree);
         }
         
+        for(int key : map.keySet()){
+            TreeInfo t = map.get(key);
+            System.out.println(key);
+            System.out.print(t.odd + " " + t.even + " " + t.rOdd + " " + t.rEven);
+            System.out.println();
+        }
+        
         int[] answer = new int[2];
         for(TreeInfo t : map.values()){
             if((t.odd == 1 && t.even == 0) || (t.odd == 0 && t.even == 1)){
@@ -53,8 +60,6 @@ class Solution {
                 answer[1]++;
             }
         }
-        
-        
         
         return answer;
     }
